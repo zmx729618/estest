@@ -12,6 +12,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
@@ -80,9 +81,9 @@ public class EntityServiceTest {
     	System.out.println(elasticsearchTemplate);
 		Pageable pageable = new PageRequest(Long.valueOf(0).intValue(), Long.valueOf(10).intValue());
         SearchQuery searchQuery = new NativeSearchQueryBuilder()
-        		.withQuery(QueryBuilders.boolQuery().must(QueryBuilders.multiMatchQuery("民", "name^2","shortName","abstractText^3")
+        		.withQuery(QueryBuilders.boolQuery().must(QueryBuilders.multiMatchQuery("rlj", "name","pinyin","jianpin")
 						.type(MultiMatchQueryBuilder.Type.BEST_FIELDS)))
-		.withIndices("index_entity").withTypes("type_entity").withSort(SortBuilders.scoreSort()).withPageable(pageable)
+		.withIndices("i_entity").withTypes("t_entity").withSort(SortBuilders.scoreSort()).withPageable(pageable)
 		.build();
         AggregatedPage<Entity> sampleEntities = elasticsearchTemplate.queryForPage(searchQuery,Entity.class);
         List<Entity> list =sampleEntities.getContent();
@@ -99,9 +100,17 @@ public class EntityServiceTest {
     	
     	Client transportClient = elasticsearchTemplate.getClient();
     	
-    	
-        
 
     }
+    
+    
+    
+  
+    
+    
+    
+    
+    
+    
 
 }

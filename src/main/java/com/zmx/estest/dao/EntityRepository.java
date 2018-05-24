@@ -20,6 +20,10 @@ public interface EntityRepository extends ElasticsearchRepository<Entity,Long> {
      * @desccroption:根据关键词语查询信息
      */
     public List<Entity> findByName(String name);
+    public List<Entity> findByJianpin(String name);
+    public List<Entity> findByPinyin(String name);
+    
+    public List<Entity> findByNameOrPinyinOrJianpin(String name,String name1,String name2);
     
     
     public List<Entity> findByFullName(String name);

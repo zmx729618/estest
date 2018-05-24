@@ -61,7 +61,7 @@ public class EntityServiceImpl extends BaseService implements EntityService{
 				        .withTypes("type_entity")
 				        .withSort(SortBuilders.scoreSort())
 				        .withPageable(pageable)
-				.build();
+				        .build();
 		Page<Entity> page = entityRepository.search(searchQuery);
 		if (null != page) {
 			List<Entity> retList = page.getContent();
@@ -77,6 +77,24 @@ public class EntityServiceImpl extends BaseService implements EntityService{
 		SearchQuery searchQuery = new NativeSearchQueryBuilder()
 				.withQuery(QueryBuilders.boolQuery().must(QueryBuilders.multiMatchQuery(keyWord, "name^2")
 								.type(MultiMatchQueryBuilder.Type.BEST_FIELDS)))
+				.withIndices("i_entity").withTypes("t_entity").withSort(SortBuilders.scoreSort()).withPageable(pageable)
+				.build();
+		Page<Entity> page = entityRepository.search(searchQuery);
+		if (null != page) {
+			List<Entity> retList = page.getContent();
+			return retList;
+		}
+		return null;
+	}
+	
+	
+	
+	public List<Entity> searchEntity2(String keyWord, Long offset, Long pageSize) {
+		
+		Pageable pageable = new PageRequest(Long.valueOf(offset).intValue(), Long.valueOf(pageSize).intValue());
+		SearchQuery searchQuery = new NativeSearchQueryBuilder()
+				.withQuery(QueryBuilders.boolQuery().must(QueryBuilders.multiMatchQuery(keyWord, "name^2")
+								.type(MultiMatchQueryBuilder.Type.BEST_FIELDS)))
 				.withIndices("index_entity").withTypes("type_entity").withSort(SortBuilders.scoreSort()).withPageable(pageable)
 				.build();
 		Page<Entity> page = entityRepository.search(searchQuery);
@@ -86,6 +104,32 @@ public class EntityServiceImpl extends BaseService implements EntityService{
 		}
 		return null;
 	}
+	
+	
+	
+	
+    public List<Entity> searchAutoComplete(String keyWords){
+     
+    	Pageable pageable = new PageRequest(Long.valueOf(0).intValue(), Long.valueOf(10).intValue());
+    	SearchQuery searchQuery = new NativeSearchQueryBuilder()
+		        .withQuery(QueryBuilders.boolQuery()
+				.should(QueryBuilders.termQuery("name", keyWords))
+				.should(QueryBuilders.termQuery("pinyin", keyWords))
+			    .should(QueryBuilders.termQuery("jianpin", keyWords)
+			    ))
+		        .withIndices("i_entity")
+		        .withTypes("t_entity")
+		        .withSort(SortBuilders.scoreSort())
+		        .withPageable(pageable)
+		        .build();
+		Page<Entity> page = entityRepository.search(searchQuery);
+		if (null != page) {
+			List<Entity> retList = page.getContent();
+		    return retList;
+		}
+		return null;
+
+    }
 
 
 

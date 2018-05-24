@@ -7,8 +7,9 @@ import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldIndex;
 import org.springframework.data.elasticsearch.annotations.FieldType;
+import org.springframework.data.elasticsearch.annotations.GeoPointField;
 
-@Document(indexName="index_entity", type="type_entity",shards = 5 , replicas = 1)
+@Document(indexName="i_entity", type="t_entity",shards = 5 , replicas = 1)
 public class Entity implements Serializable {
 
 	private static final long serialVersionUID = -763638353551774166L;
@@ -16,14 +17,45 @@ public class Entity implements Serializable {
 	@Id
 	private Long id;
 	
-	@Field(type = FieldType.String,index = FieldIndex.analyzed,analyzer="ik_max_word")
+/*	@GeoPointField
+	private String address;*/
+	
+	@Field(type = FieldType.String,index = FieldIndex.analyzed,analyzer="ngramIndexAnalyzer")
 	private String name;
 	
+	
+	@Field(type = FieldType.String,index = FieldIndex.analyzed,analyzer="pinyiSimpleIndexAnalyzer",searchAnalyzer="pinyiFullSearchAnalyzer")
+	private String pinyin;
+	
+	
+	@Field(type = FieldType.String,index = FieldIndex.analyzed,analyzer="jianpinIndexAnalyzer")
+	private String jianpin;
+	
+
+	public String getPinyin() {
+		return pinyin;
+	}
+
+	public void setPinyin(String pinyin) {
+		this.pinyin = pinyin;
+	}
+
+	public String getJianpin() {
+		return jianpin;
+	}
+
+	public void setJianpin(String jianpin) {
+		this.jianpin = jianpin;
+	}
+
+
+
 	@Field(type = FieldType.String,index = FieldIndex.analyzed,analyzer="ik_max_word")
 	private String fullName;
 	
 	@Field(type = FieldType.String,index = FieldIndex.analyzed,analyzer="ik_max_word")
 	private String shortName;
+	
 	
 	@Field(type = FieldType.String,index = FieldIndex.analyzed,analyzer="ik_max_word")
 	private String abstractText;
@@ -54,6 +86,10 @@ public class Entity implements Serializable {
 
 	public void setName(String name) {
 		this.name = name;
+		
+		//this.jianpin=name;
+		
+		//this.pinyin=name;
 	}
 
 	public String getFullName() {
